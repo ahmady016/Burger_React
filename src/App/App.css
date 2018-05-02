@@ -1,0 +1,12 @@
+.container {
+  width: 85%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 10px;
+}
+h5 {
+  margin: 0 0 10px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #dad1c4;
+}
