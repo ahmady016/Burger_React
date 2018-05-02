@@ -8,58 +8,47 @@ class AppState {
   ingredients = {
     salad: {
       quantity: 0,
-      price: 0.50,
-      total: 0
+      price: 0.50
     },
     beef: {
       quantity: 0,
-      price: 2.50,
-      total: 0
+      price: 2.50
     },
     tuna: {
       quantity: 0,
-      price: 2.00,
-      total: 0
+      price: 2.00
     },
     mayonnaise: {
       quantity: 0,
-      price: 1.00,
-      total: 0
+      price: 1.00
     },
     mushroom: {
       quantity: 0,
-      price: 1.50,
-      total: 0
+      price: 1.50
     },
     feta: {
       quantity: 0,
-      price: 0.75,
-      total: 0
+      price: 0.75
     },
     cheddar: {
       quantity: 0,
-      price: 1.25,
-      total: 0
+      price: 1.25
     },
     lamb: {
       quantity: 0,
-      price: 3.50,
-      total: 0
+      price: 3.50
     },
     mozzarella: {
       quantity: 0,
-      price: 1.50,
-      total: 0
+      price: 1.50
     },
     chicken: {
       quantity: 0,
-      price: 1.50,
-      total: 0
+      price: 1.50
     },
     roquefort: {
       quantity: 0,
-      price: 1.75,
-      total: 0
+      price: 1.75
     }
   };
   order = {};
