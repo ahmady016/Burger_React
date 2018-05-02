@@ -4,7 +4,7 @@ import AppState from "./../../Common/AppState";
 import './Builder.css'
 
 export default () => {
-  const { ingredients, setOrder} = AppState;
+  const { ingredients, setOrder, order} = AppState;
   return (
     <Template className="builder">
       <h5>Ingredients</h5>
@@ -13,7 +13,7 @@ export default () => {
               .map( key =>
                 <div key={key}>
                   <button className="btn-small btn-floating waves-effect waves-light"
-                          disabled={!ingredients[key].quantity}
+                          disabled={!order[key]}
                           onClick={() => setOrder(key,-1)}>
                     <i className="material-icons">remove</i>
                   </button>

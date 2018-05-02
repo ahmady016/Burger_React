@@ -4,63 +4,29 @@ import './../index.css';
 import App from './../App/App';
 
 class AppState {
+  _price = 0.00
 
   ingredients = {
-    salad: {
-      quantity: 0,
-      price: 0.50
-    },
-    beef: {
-      quantity: 0,
-      price: 2.50
-    },
-    tuna: {
-      quantity: 0,
-      price: 2.00
-    },
-    mayonnaise: {
-      quantity: 0,
-      price: 1.00
-    },
-    mushroom: {
-      quantity: 0,
-      price: 1.50
-    },
-    feta: {
-      quantity: 0,
-      price: 0.75
-    },
-    cheddar: {
-      quantity: 0,
-      price: 1.25
-    },
-    lamb: {
-      quantity: 0,
-      price: 3.50
-    },
-    mozzarella: {
-      quantity: 0,
-      price: 1.50
-    },
-    chicken: {
-      quantity: 0,
-      price: 1.50
-    },
-    roquefort: {
-      quantity: 0,
-      price: 1.75
-    }
+    salad: 0.50,
+    beef: 2.50,
+    tuna: 2.00,
+    mayonnaise: 1.00,
+    mushroom: 1.50,
+    feta: 0.75,
+    cheddar: 1.25,
+    lamb: 3.50,
+    mozzarella: 1.50,
+    chicken: 1.50,
+    roquefort: 1.75
   };
   order = {};
 
   reset = () => {
     this.order = {};
-    Object.keys(this.ingredients)
-          .forEach(key => this.ingredients[key].quantity = 0);
     render(<App />, document.getElementById('root'));
   }
 
-  setTotalPrice = () => {
+  _setTotalPrice = () => {
     this.order.totalPrice = Object.keys(this.order)
                               .filter(key => key !== 'totalPrice')
                               .map(key => +this.order[key].total)
@@ -68,15 +34,21 @@ class AppState {
   }
 
   setOrder = (key, val) => {
-    const item = this.ingredients[key];
-    item.quantity += val;
-    if (item.quantity) {
-      this.order[key] = item
-      this.order[key].total = Number(item.quantity * item.price).toFixed(2);
+    this._price = this.ingredients[key];
+    if (!this.order[key]) {
+      this.order[key] = {
+        price: this._price,
+        quantity: val,
+        total: Number(val * this._price).toFixed(2)
+      }
     } else {
-      delete this.order[key];
+      this.order[key].quantity += val;
+      if (this.order[key].quantity)
+        this.order[key].total = Number(this.order[key].quantity * this._price).toFixed(2);
+      else
+        delete this.order[key];
     }
-    this.setTotalPrice();
+    this._setTotalPrice();
     render(<App />, document.getElementById('root'));
   };
 
