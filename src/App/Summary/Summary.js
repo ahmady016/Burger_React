@@ -6,7 +6,7 @@ import ConfirmOrder from './../ConfirmOrder'
 import './Summary.css';
 
 export default () => {
-  const { ingredients, totalPrice, order } = AppState;
+  const { order } = AppState;
   const rows = Object.keys(order)
                   .filter(key => key !== 'totalPrice')
                   .map(key => (

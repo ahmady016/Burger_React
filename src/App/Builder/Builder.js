@@ -4,7 +4,7 @@ import AppState from "./../../Common/AppState";
 import './Builder.css'
 
 export default () => {
-  const { ingredients, setQuantity} = AppState;
+  const { ingredients, setOrder} = AppState;
   return (
     <Template className="builder">
       <h5>Ingredients</h5>
@@ -14,14 +14,14 @@ export default () => {
                 <div key={key}>
                   <button className="btn-small btn-floating waves-effect waves-light"
                           disabled={!ingredients[key].quantity}
-                          onClick={() => setQuantity(key,-1)}>
+                          onClick={() => setOrder(key,-1)}>
                     <i className="material-icons">remove</i>
                   </button>
                   <span className="hoverable">
                     {key.toTitleCase()}
                   </span>
                   <button className="btn-small btn-floating waves-effect waves-light"
-                          onClick={() => setQuantity(key,1)}>
+                          onClick={() => setOrder(key,1)}>
                     <i className="material-icons">add</i>
                   </button>
                 </div>

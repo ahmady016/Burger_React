@@ -56,31 +56,27 @@ class AppState {
   reset = () => {
     this.order = {};
     Object.keys(this.ingredients)
-          .forEach(key => {
-            const item = this.ingredients[key];
-            item.quantity = 0;
-            item.total = 0;
-          });
+          .forEach(key => this.ingredients[key].quantity = 0);
     render(<App />, document.getElementById('root'));
   }
 
-  setOrder = () => {
-    Object.keys(this.ingredients)
-          .forEach( key => {
-              if (this.ingredients[key].quantity)
-                this.order[key] = this.ingredients[key];
-          });
+  setTotalPrice = () => {
     this.order.totalPrice = Object.keys(this.order)
                               .filter(key => key !== 'totalPrice')
                               .map(key => +this.order[key].total)
                               .reduce( (total,subTotal) => total+subTotal,0);
   }
 
-  setQuantity = (key, val) => {
+  setOrder = (key, val) => {
     const item = this.ingredients[key];
     item.quantity += val;
-    item.total = Number(item.quantity * item.price).toFixed(2);
-    this.setOrder();
+    if (item.quantity) {
+      this.order[key] = item
+      this.order[key].total = Number(item.quantity * item.price).toFixed(2);
+    } else {
+      delete this.order[key];
+    }
+    this.setTotalPrice();
     render(<App />, document.getElementById('root'));
   };
 
