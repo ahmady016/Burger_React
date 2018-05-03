@@ -1,6 +1,6 @@
 import React from "react";
-import Template from './../../Common/Template';
-import AppState from "./../../Common/AppState";
+import Template from './../../../Common/Template';
+import AppState from "./../../../Common/AppState";
 import "./Burger.css";
 
 export default () => {
