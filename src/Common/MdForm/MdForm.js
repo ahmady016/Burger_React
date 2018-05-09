@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import Template from './Template'
 import M from 'materialize-css';
 import './MdForm.css';
+import Template from './../Template'
 
 export default class MdForm extends Component {
 

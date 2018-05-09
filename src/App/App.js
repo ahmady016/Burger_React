@@ -2,7 +2,7 @@ import React from 'react';
 import BurgerBuilder from './BurgerBuilder/BurgerBuilder';
 import Template from './../Common/Template';
 import './App.css';
-import MdForm from '../Common/MdForm';
+import MdForm from '../Common/MdForm/MdForm';
 
 const formFields = {
   name: {
