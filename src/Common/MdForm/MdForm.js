@@ -293,7 +293,7 @@ export default class MdForm extends Component {
 
   render() {
     return (
-      <form>
+      <form className={this.props.className}>
         {this.formFields}
       </form>
     )
