@@ -11,18 +11,25 @@ export default class MdForm extends Component {
                   .map(key => ({ fieldName: key, ...this.props[key] } ));
 
   state = this.inputs
-              .filter(input => !['submit','button'].includes(input.fieldName) )
+              .filter(input => !['submit','button','className'].includes(input.fieldName) )
               .reduce( (obj, input) => {
                 obj[input.fieldName] = {
                   value: input.value || '',
-                  valid: false,
+                  invalid: false,
                   touched: false,
-                  errors: {}
+                  errors: (input.validators)
+                          ? Object.keys(input.validators)
+                                  .reduce( (obj, validator) => {
+                                    obj[validator] = null;
+                                    return obj;
+                                  }, {})
+                          : {}
                 };
                 return obj;
-              }, {valid: false, touched: false});
+              }, {invalid: false, touched: false});
 
   formFields = this.inputs
+    .filter(input => !['className'].includes(input.fieldName) )
     .map( input => {
       let key = input.fieldName;
       switch (input.type) {
@@ -49,7 +56,8 @@ export default class MdForm extends Component {
                               return {
                                 [key]: {
                                   ...prevState[key],
-                                  value: value
+                                  value: value,
+                                  touched: true
                                 }
                               }
                             }) }
@@ -81,7 +89,8 @@ export default class MdForm extends Component {
                             return {
                               [key]: {
                                 ...prevState[key],
-                                value: this.domElements[key].checked
+                                value: this.domElements[key].checked,
+                                touched: true
                               }
                             }
                           }) }
@@ -115,7 +124,8 @@ export default class MdForm extends Component {
                       return {
                         [key]: {
                           ...prevState[key],
-                          value: this.domElements[key].value
+                          value: this.domElements[key].value,
+                          touched: true
                         }
                       }
                     }) }
@@ -141,7 +151,8 @@ export default class MdForm extends Component {
                           return {
                             [key]: {
                               ...prevState[key],
-                              value: this.domElements[key].value
+                              value: this.domElements[key].value,
+                              touched: true
                             }
                           }
                         }) }
@@ -239,7 +250,8 @@ export default class MdForm extends Component {
                       return {
                         [key]: {
                           ...prevState[key],
-                          value: this.domElements[key].value
+                          value: this.domElements[key].value,
+                          touched: true
                         }
                       }
                     }) }
