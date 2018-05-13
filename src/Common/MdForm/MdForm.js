@@ -4,12 +4,12 @@ import './MdForm.css';
 import Template from './../Template'
 
 export default class MdForm extends Component {
-
+  // hold the needed dom element catched in component DidMount
   domElements = {};
-
+  // hold the Form fields props
   inputs  = Object.keys(this.props)
                   .map(key => ({ fieldName: key, ...this.props[key] } ));
-
+  // holds the Form state
   state = this.inputs
               .filter(input => !['submit','button','className'].includes(input.fieldName) )
               .reduce( (obj, input) => {
@@ -28,6 +28,76 @@ export default class MdForm extends Component {
                 return obj;
               }, {invalid: false, touched: false});
 
+  // set errors
+  getErrors = (value, validatorKeys, validators, prevErrors) => {
+    for (let i = 0; i < validatorKeys.length; i++) {
+      const err = validators[validatorKeys[i]](value);
+      if(err)
+        return {
+          ...prevErrors,
+          [validatorKeys[i]] : err
+        }
+    }
+    return {
+      ...prevErrors
+    }
+  }
+  // handle validation [set errors]
+  setErrors = (key, input, value) => {
+    this.setState((prevState) => ({
+        [key]: {
+          ...prevState[key],
+          errors: this.getErrors(value,Object.keys(input.validators),input.validators,prevState[key].errors),
+          value: value,
+          touched: true
+        }
+      })
+    );
+  }
+  // handle validation [set field invalid state]
+  setFieldInvalid = (key) => {
+    this.setState((prevState) => ({
+        [key]: {
+          ...prevState[key],
+          invalid: Object.keys(prevState[key].errors)
+                        .some( (err) => prevState[key].errors[err] !== null)
+        }
+      })
+    );
+  }
+  // handle validation [set Form invalid state]
+  setFormInvalid = (key) => {
+    this.setState((prevState) => ({
+        [key]: {
+          ...prevState[key],
+          invalid: Object.keys(prevState)
+                        .filter( key => !['invalid','touched'].includes(key) )
+                        .some( key => prevState[key].invalid === true )
+        }
+      })
+    );
+  }
+  // handle validation [all]
+  checkValidation = (key, input, value) => {
+      this.setErrors(key, input, value);
+      this.setFieldInvalid(key);
+      this.setFormInvalid(key);
+  }
+  // handle Changed Value
+  setValue = (key, input, value) => {
+    if (input.validators)
+      this.checkValidation(key, input, value);
+    else
+      this.setState( (prevState) => ({
+          [key]: {
+            ...prevState[key],
+            value: value,
+            touched: true
+          }
+        })
+      )
+  }
+  // build the Form fields [logic and UI] from the fields props
   formFields = this.inputs
     .filter(input => !['className'].includes(input.fieldName) )
     .map( input => {
@@ -46,21 +116,16 @@ export default class MdForm extends Component {
                             id={opt.value}
                             name={key}
                             value={this.state.key}
-                            onChange={ (e) => this.setState((prevState) => {
-                              let value = prevState[key].value;
-                              if (this.domElements[key][opt.value].checked) {
-                                value = (input.type === 'checkbox' && value)
-                                              ? value + ',' + opt.value
-                                              : opt.value;
-                              }
-                              return {
-                                [key]: {
-                                  ...prevState[key],
-                                  value: value,
-                                  touched: true
-                                }
-                              }
-                            }) }
+                            onChange={ (e) => {
+                              let value = (input.type === 'checkbox')
+                                          ? input.options.reduce( (str, opt) => {
+                                            if(this.domElements[key][opt.value].checked)
+                                              str += opt.value + ' ';
+                                            return str;
+                                          }, '' ).trim()
+                                          : opt.value;
+                              this.setValue(key,input,value);
+                            } }
                             onBlur={ (e) => this.setState( (prevState) =>  {
                               return {
                                 [key]: {
@@ -85,15 +150,10 @@ export default class MdForm extends Component {
                           id={key}
                           name={key}
                           value={this.state.key}
-                          onChange={ (e) => this.setState( (prevState) =>  {
-                            return {
-                              [key]: {
-                                ...prevState[key],
-                                value: this.domElements[key].checked,
-                                touched: true
-                              }
-                            }
-                          }) }
+                          onChange={ (e) => {
+                            let value = this.domElements[key].checked;
+                            this.setValue(key,input,value);
+                          } }
                           onBlur={ (e) => this.setState( (prevState) =>  {
                             return {
                               [key]: {
@@ -120,15 +180,10 @@ export default class MdForm extends Component {
                     min={input.min || 0}
                     max={input.max || 100}
                     value={this.state.key}
-                    onChange={ (e) => this.setState( (prevState) =>  {
-                      return {
-                        [key]: {
-                          ...prevState[key],
-                          value: this.domElements[key].value,
-                          touched: true
-                        }
-                      }
-                    }) }
+                    onChange={ (e) => {
+                      let value = this.domElements[key].value;
+                      this.setValue(key,input,value);
+                    } }
                     onBlur={ (e) => this.setState( (prevState) =>  {
                       return {
                         [key]: {
@@ -147,15 +202,10 @@ export default class MdForm extends Component {
                         id={key}
                         name={key}
                         value={this.state.key}
-                        onChange={ (e) => this.setState( (prevState) =>  {
-                          return {
-                            [key]: {
-                              ...prevState[key],
-                              value: this.domElements[key].value,
-                              touched: true
-                            }
-                          }
-                        }) }
+                        onChange={ (e) => {
+                          let value = this.domElements[key].value;
+                          this.setValue(key,input,value);
+                        } }
                         onBlur={ (e) => this.setState( (prevState) =>  {
                           return {
                             [key]: {
@@ -179,15 +229,10 @@ export default class MdForm extends Component {
                     name={key}
                     className={className}
                     value={this.state.key}
-                    onBlur={ (e) => this.setState( (prevState) =>  {
-                      return {
-                        [key]: {
-                          ...prevState[key],
-                          value: this.domElements[key].value,
-                          touched: true
-                        }
-                      }
-                    }) } />
+                    onBlur={ (e) => {
+                      let value = this.domElements[key].value;
+                      this.setValue(key,input,value);
+                    } } />
               <label htmlFor={key}>{input.label || input.placeholder || key}</label>
             </div>
           )
@@ -198,15 +243,10 @@ export default class MdForm extends Component {
               <select id={key}
                       name={key}
                       value={this.state.key}
-                      onChange={ (e) => this.setState( (prevState) =>  {
-                        return {
-                          [key]: {
-                            ...prevState[key],
-                            value: this.domElements[key].value,
-                            touched: true
-                          }
-                        }
-                      }) }
+                      onChange={ (e) => {
+                        let value = this.domElements[key].value;
+                        this.setValue(key,input,value);
+                      } }
                       onBlur={ (e) => this.setState( (prevState) =>  {
                         return {
                           [key]: {
@@ -246,15 +286,10 @@ export default class MdForm extends Component {
                     name={key}
                     type={input.type || 'text'}
                     value={this.state.key}
-                    onChange={ (e) => this.setState( (prevState) =>  {
-                      return {
-                        [key]: {
-                          ...prevState[key],
-                          value: this.domElements[key].value,
-                          touched: true
-                        }
-                      }
-                    }) }
+                    onChange={ (e) => {
+                      let value = this.domElements[key].value;
+                      this.setValue(key,input,value);
+                    } }
                     onBlur={ (e) => this.setState( (prevState) =>  {
                       return {
                         [key]: {
@@ -268,7 +303,7 @@ export default class MdForm extends Component {
           )
       }
     });
-
+  // init date picker
   initDatePickers = () => {
     const currentYear = +(new Date()).getFullYear();
     const pickers = document.querySelectorAll('.datepicker');
