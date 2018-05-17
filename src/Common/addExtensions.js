@@ -1,11 +1,41 @@
 export default () => {
   // return full datetime string
-  Date.prototype.toString = function() {
-    let parts = this.toLocaleString()
-    .split(',')
-    .join('')
-    .split('/'); 
-    return [parts[1],parts[0],parts[2]].join('/');
+  Date.prototype.toString = function(format = 'dd/mm/yyyy 00:00:00 AM') {
+    let separator = '/', day, month
+    switch (format) {
+      case 'dd/mm/yyyy 00:00:00 AM':
+        let parts = this.toLocaleString()
+                        .split(',')
+                        .join('')
+                        .split('/');
+        day = (+parts[1]>9 ? '' : '0') + parts[1];
+        month = (+parts[0]>9 ? '' : '0') + parts[0];
+        return [day,month,parts[2]].join('/');
+      case 'dd-mm-yyyy':
+        separator = '-';
+      case 'dd/mm/yyyy':
+        day = this.getDate();
+        day = (day>9 ? '' : '0') + day;
+        month = this.getMonth()+1;
+        month = (month>9 ? '' : '0') + month;
+        return [
+            day,
+            month,
+            this.getFullYear()
+          ].join(separator);
+      case 'yyyy-mm-dd':
+          separator = '-';
+      case 'yyyy/mm/dd':
+        day = this.getDate();
+        day = (day>9 ? '' : '0') + day;
+        month = this.getMonth()+1;
+        month = (month>9 ? '' : '0') + month;
+        return [
+            this.getFullYear(),
+            month,
+            day
+          ].join(separator);
+    }
   }
   // return the duration from now till that date in [years days hours minutes seconds] format
   Date.prototype.duration = function(format = 'd') {
@@ -25,7 +55,7 @@ export default () => {
         val = '',
         lastUnit = '',
         result = [];
-
+    // return the default format [numbers only]
     if (format === 'd') {
       return Object.keys(time).map(unit => {
               if (seconds >= time[unit]) {
@@ -46,7 +76,7 @@ export default () => {
       }
       // get the last unit
       lastUnit = result.pop();
-      // build the result string from the result array and lastUnit 
+      // build the result string from the result array and lastUnit
       return (result.length)? result.join(', ') + ' and ' + lastUnit : lastUnit;
     }
   }
@@ -55,6 +85,7 @@ export default () => {
   Number.between = function(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+  // randomize sort an array
   Array.prototype.randomize = function(count) {
     if(this.length <= 1)
       return this;
@@ -75,14 +106,45 @@ export default () => {
   Array.prototype.flatten = function() {
     this.reduce( (a, b) => a.concat(Array.isArray(b) ? flattenArr(b) : b), []);
   }
+  // randomize sort an array
   Array.prototype.shuffle = function() {
     if(this.length < 2)
       return this;
     this.sort(() => Math.random() - 0.5);
+  }
+  // split an array to group of chunks of fixed length
+  Array.prototype.chunks = function(chunkSize) {
+    if(chunkSize >= this.length)
+      return this;
+    let result = [],
+        len = this.length;
+    for (let i = 0; i<len; i +=chunkSize)
+      result.push(this.slice(i, i+chunkSize));
+    return result;
+  }
+  // remove any duplicated values from array
+  Array.prototype.unique = function() {
+    let result = [];
+    this.forEach( item => {
+        if ( !result.includes(item) )
+          result.push(item);
+    });
+    this.length = 0;
+    this.push(...result);
+    return this;
   }
   // title case a string
   String.prototype.toTitleCase = function() {
     let str = this.toLowerCase();
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+  String.prototype.chunks = function(chunkLength) {
+    if(chunkLength >= this.length)
+      return this;
+    let result = [],
+        len = this.length;
+    for (var i=0; i<len; i+=chunkLength)
+      result.push(this.substring(i, i+chunkLength));
+    return result;
+};
 }
