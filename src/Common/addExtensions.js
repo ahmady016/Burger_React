@@ -146,5 +146,15 @@ export default () => {
     for (var i=0; i<len; i+=chunkLength)
       result.push(this.substring(i, i+chunkLength));
     return result;
-};
+  }
+  // convert the date string to date object - it assume date string in dd/mm/yyyy
+  // if format is false then assume string in yyyy/mm/dd or mm/dd/yyyy
+  String.prototype.toDate = function(format = true) {
+    let str = this;
+    if (format){
+      let parts = this.split('/');
+      str = [parts[1],parts[0],parts[2]].join('/')
+    }
+    return new Date(str);
+  }
 }
