@@ -140,8 +140,8 @@ export default () => {
       randIndex = Number.between(0,this.length-1);
       return this[randIndex];
     }
-    if (count > this.length)
-      count = this.length;
+    if (count >= this.length)
+      return this.shuffle();
     let indexes = [];
     for(let i=0;i<count;i++) {
       do {
