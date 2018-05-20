@@ -133,6 +133,24 @@ export default () => {
     this.push(...result);
     return this;
   }
+  // return random item(s) from array
+  Array.prototype.random = function(count = 1) {
+    let randIndex = 0;
+    if(count === 1) {
+      randIndex = Number.between(0,this.length-1);
+      return this[randIndex];
+    }
+    if (count > this.length)
+      count = this.length;
+    let indexes = [];
+    for(let i=0;i<count;i++) {
+      do {
+        randIndex = Number.between(0,this.length-1);
+      } while (indexes.includes(randIndex))
+      indexes.push(randIndex);
+    }
+    return indexes.map(index => this[index]);
+  }
   // title case a string
   String.prototype.toTitleCase = function() {
     let str = this.toLowerCase();
