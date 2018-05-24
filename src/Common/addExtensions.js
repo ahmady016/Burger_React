@@ -119,10 +119,16 @@ export default () => {
     return result;
   };
   // remove any duplicated values from array
-  Array.prototype.unique = function() {
+  Array.prototype.unique = function(keyName) {
     let result = [];
     this.forEach(item => {
-      if (!result.includes(item)) result.push(item);
+      if(keyName) {
+        if (item[keyName] && !result.includes(item[keyName]))
+          result.push(item[keyName]);
+      } else {
+        if (item !== "" && !result.includes(item))
+          result.push(item);
+      }
     });
     this.length = 0;
     this.push(...result);
@@ -202,10 +208,12 @@ export default () => {
     let str = this.toLowerCase();
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+  // return fixed length slice from a string
   String.prototype.chunks = function(chunkLength) {
-    if (chunkLength >= this.length) return this;
+    if (chunkLength >= this.length)
+      return this;
     let result = [],
-      len = this.length;
+        len = this.length;
     for (var i = 0; i < len; i += chunkLength)
       result.push(this.substring(i, i + chunkLength));
     return result;
