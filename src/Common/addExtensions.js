@@ -121,15 +121,17 @@ export default () => {
   // remove any duplicated values from array
   Array.prototype.unique = function(keyName) {
     let result = [];
-    this.forEach(item => {
-      if(keyName) {
+    if (keyName)
+      this.forEach(item => {
         if (item[keyName] && !result.includes(item[keyName]))
           result.push(item[keyName]);
-      } else {
+      });
+    else
+      this.forEach(item => {
         if (item !== "" && !result.includes(item))
           result.push(item);
-      }
-    });
+      });
+
     this.length = 0;
     this.push(...result);
     return this;
@@ -151,6 +153,22 @@ export default () => {
     }
     return indexes.map(index => this[index]);
   };
+  // group an array of object by specified field values
+  Array.prototype.groupBy = function(field) {
+    let groups = {},
+        key;
+    if(!field)
+      return groups;
+    this.forEach( item => {
+      if(item[field]) {
+        key = item[field];
+        if(!Object.keys(item).includes(key))
+          groups[key] = [];
+        groups[key].push(item);
+      }
+    });
+    return groups;
+  }
   // generate a random string array
   Array.random = function({len = 10, count = 10, unique = false}) {
     let _currString,
