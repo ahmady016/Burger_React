@@ -109,6 +109,15 @@ export default () => {
     if (this.length < 2) return this;
     this.sort(() => Math.random() - 0.5);
   };
+  // clean an array [remove null or undifined or empty string or empty object]
+  Array.prototype.clean = function() {
+    return this.filter( item => {
+      if (typeof item === 'object')
+        return item !== null && Object.keys(item).length > 0
+      else
+        return item !== "" && item !== undefined
+    })
+  };
   // split an array to group of chunks of fixed length
   Array.prototype.chunks = function(chunkSize) {
     if (chunkSize >= this.length) return this;
