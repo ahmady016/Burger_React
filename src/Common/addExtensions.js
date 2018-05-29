@@ -1,4 +1,60 @@
 export default () => {
+  // generate random integer between min and max values
+  Number.between = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+  // generate a random string array
+  Array.random = function({len = 10, count = 10, unique = false}) {
+    let _currString,
+        _stringOpts = {
+          upper: true,
+          numbers: true,
+          len: len
+         },
+        _result = [];
+
+    for (let i = 0; i < count; i++) {
+      _currString = String.random(_stringOpts);
+      if (unique) {
+        while ( result.includes(_currString) )
+          _currString = String.random(_stringOpts);
+      }
+      _result.push(_currString);
+    }
+
+    return _result;
+  }
+  // generate a random string
+  String.random = function({ lower, upper, numbers, symbols, len }) {
+    let _base = "",
+        _allStrings = {
+          lower: "abcdefghijklmnopqrstuvwxyz",
+          upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+          numbers: "0123456789"
+        },
+        _currChar = "",
+        _prevChar = "",
+        _result = "";
+    if(lower)
+      _base += _allStrings.lower;
+    if(upper)
+      _base += _allStrings.upper;
+    if(numbers)
+      _base += _allStrings.numbers;
+    if(symbols)
+      _base += symbols;
+    for(var i=0;i<len;i++) {
+      // get the current random character but not equal the previous one
+      do {
+          _currChar = _base.charAt(Number.between(0,_base.length-1));
+      } while (_prevChar === _currChar);
+      // append it to the generated string
+      _result += _currChar;
+      // put the current in the previous for the next character
+      _prevChar = _currChar;
+    }
+    return _result;
+  };
   // return full datetime string
   Date.prototype.toString = function(format = "dd/mm/yyyy 00:00:00 AM") {
     let separator = "/",
@@ -120,10 +176,6 @@ export default () => {
         return 'invalid comparison operator !!!'
     }
   }
-  // generate random integer between min and max values
-  Number.between = function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
   // randomize sort an array
   Array.prototype.randomize = function(count) {
     if (this.length <= 1) return this;
@@ -217,58 +269,6 @@ export default () => {
     });
     return groups;
   }
-  // generate a random string array
-  Array.random = function({len = 10, count = 10, unique = false}) {
-    let _currString,
-        _stringOpts = {
-          upper: true,
-          numbers: true,
-          len: len
-         },
-        _result = [];
-
-    for (let i = 0; i < count; i++) {
-      _currString = String.random(_stringOpts);
-      if (unique) {
-        while ( result.includes(_currString) )
-          _currString = String.random(_stringOpts);
-      }
-      _result.push(_currString);
-    }
-
-    return _result;
-  }
-  // generate a random string
-  String.random = function({ lower, upper, numbers, symbols, len }) {
-    let _base = "",
-        _allStrings = {
-          lower: "abcdefghijklmnopqrstuvwxyz",
-          upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-          numbers: "0123456789"
-        },
-        _currChar = "",
-        _prevChar = "",
-        _result = "";
-    if(lower)
-      _base += _allStrings.lower;
-    if(upper)
-      _base += _allStrings.upper;
-    if(numbers)
-      _base += _allStrings.numbers;
-    if(symbols)
-      _base += symbols;
-    for(var i=0;i<len;i++) {
-      // get the current random character but not equal the previous one
-      do {
-          _currChar = _base.charAt(Number.between(0,_base.length-1));
-      } while (_prevChar === _currChar);
-      // append it to the generated string
-      _result += _currChar;
-      // put the current in the previous for the next character
-      _prevChar = _currChar;
-    }
-    return _result;
-  };
   // title case a string
   String.prototype.toTitleCase = function() {
     let str = this.toLowerCase();
@@ -293,5 +293,17 @@ export default () => {
       str = [parts[1], parts[0], parts[2]].join("/");
     }
     return new Date(str);
+  };
+  // get querystring object from URL
+  String.prototype.query = function() {
+    if(this.indexOf('?') === -1)
+      return 'there is no querystring !!!';
+    let qStr = this.split('?')[1];
+    let qString = qStr.split('&');
+    return qString.reduce( (obj, item) => {
+            const [ key, value ] = item.split('=');
+            obj[key] = value;
+            return obj;
+          }, {});
   };
 };
