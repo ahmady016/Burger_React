@@ -97,6 +97,29 @@ export default () => {
     // return it after change
     return this;
   }
+  // compare date
+  Date.prototype.compare = function(op,d1,d2) {
+    if (!op || !d1)
+      return 'must provide comparison operator and/or date value';
+    switch(op) {
+      case '==':
+        return this == d1;
+      case '>=':
+        return this >= d1;
+      case '<=':
+        return this <= d1;
+      case '>':
+        return this > d1;
+      case '<':
+        return this < d1;
+      case 'between':
+        return (d2)
+                ? this >= d1 && this <= d2
+                : 'must provide second date value';
+      default:
+        return 'invalid comparison operator !!!'
+    }
+  }
   // generate random integer between min and max values
   Number.between = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
