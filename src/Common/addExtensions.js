@@ -80,8 +80,24 @@ export default () => {
       return result.length ? result.join(", ") + " and " + lastUnit : lastUnit;
     }
   };
-  //create a function that will shuffle an array:
-  // based on a function will generate random integer between min and max values
+  // add or substract date units [year - month - week - day - hour - minute - second]
+  Date.prototype.add = function(value = 1, unit = 'day') {
+    // datetime units represented by milliseconds [used to apply changes]
+    const units = {
+      year: 31536000000,  // 365 days
+      month: 2592000000,  // 30 days
+      week: 604800000,    // 7 days
+      day: 86400000,
+      hour: 3600000,
+      minute: 60000,
+      second: 1000
+    };
+    // change the datetime value
+    this.setTime( this.getTime() + (units[unit]*value) );
+    // return it after change
+    return this;
+  }
+  // generate random integer between min and max values
   Number.between = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
