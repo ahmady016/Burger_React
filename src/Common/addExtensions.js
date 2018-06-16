@@ -269,6 +269,9 @@ export default () => {
     });
     return groups;
   }
+  Array.prototype.diff = function(arr) {
+    return this.filter( item => !arr.includes(item) );
+  };
   // title case a string
   String.prototype.toTitleCase = function() {
     let str = this.toLowerCase();
