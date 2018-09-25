@@ -75,8 +75,8 @@ const inLength = (value, { min = 0, max = Number.MAX_SAFE_INTEGER }) => {
     return value >= min && value <= max;
 }
 // test for length in string and/or number and/or date value
-const between = ({value, min, max }) => {
-  switch (typeof value) {
+const between = ({ type, value, min, max }) => {
+  switch (type) {
     case 'string':
       return (value.length >= min && value.length <= max);
     case 'number':
