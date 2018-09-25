@@ -67,6 +67,13 @@ const inList = (value, list, key) => {
     return list.some(item => (key)? (value === item[key]) : (value === item) );
   return "not a list ...";
 }
+// test for length in string and/or number value
+const inLength = (value, { min = 0, max = Number.MAX_SAFE_INTEGER }) => {
+  if(typeof value === 'string')
+    return value.length >= min && value.length <= max;
+  else if (typeof value === 'number')
+    return value >= min && value <= max;
+}
 
 export {
   alpha,
@@ -76,5 +83,6 @@ export {
   password,
   required,
   confirmed,
-  inList
+  inList,
+  inLength
 }
